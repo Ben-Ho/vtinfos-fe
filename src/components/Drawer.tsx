@@ -56,17 +56,17 @@ function ResponsiveDrawer(props: IProps) {
                     {/*print für pdf-herunterladen*/}
                     {/*get_app für herunterladen*/}
                     {/*find_in_page find_replace perm_contact_calendar perm_identity */}
-                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Suche" icon={<Search />} path="/search" />
+                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Suche" icon={<Search />} to="/search" />
                     {/*info trending_up update*/}
-                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="News" icon={<Info />} path="/news" />
+                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="News" icon={<Info />} to="/news" />
                     {/*settings create*/}
-                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Eigene Daten" icon={<Settings />} path="/own-data" />
+                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Eigene Daten" icon={<Settings />} to="/own-data" />
                     {/*explore list store supervisor_account list_alt location map navigation near_me pin_drop place location_city public people domain*/}
-                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Versammlungen" icon={<LocationCity />} path="/congregations" />
+                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Versammlungen" icon={<LocationCity />} to="/congregations" />
                     {/*// speaker_notes comment chat message textsms*/}
-                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Vorträge" icon={<SpeakerNotes />} path="/talks" />
+                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Vorträge" icon={<SpeakerNotes />} to="/talks" />
                     {/*help help_outline oder AccessibilityNew live_help*/}
-                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Anleitungen" icon={<Help />} path="/manual" />
+                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Anleitungen" icon={<Help />} to="/manual" />
                     {/*    feedback*/}
                 </>
             </Drawer>
