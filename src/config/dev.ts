@@ -5,7 +5,6 @@ declare const CONFIG_DEV_LOCAL_EXISTS: boolean;
 
 let config: IConfig = {
     ...test,
-    apiUrl: "http://dev.example.com",
 };
 
 if (process.env.NODE_ENV !== "production") {

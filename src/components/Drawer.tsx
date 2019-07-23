@@ -49,7 +49,7 @@ function ResponsiveDrawer(props: IProps) {
                 }}
             >
                 <>
-                    <div className={classes.toolbar}>
+                    <div style={{ minHeight: "60px" }}>
                         <Logo />
                     </div>
                     {/*g_translate translate language für sprach-wechsel*/}

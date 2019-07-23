@@ -2,11 +2,7 @@ import production from "app/config/production";
 import test from "app/config/test";
 
 export interface IConfig {
-    apiBaseUrl: string;
-    apiToken: string;
     apiUrl: string;
-    apiUser: string;
-    apiPassword: string;
 }
 
 interface IConfigSections {

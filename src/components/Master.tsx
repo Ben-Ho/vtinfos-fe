@@ -39,12 +39,10 @@ class Master extends React.Component<WithStyles<typeof styles> & IWithWidth> {
                                 <Menu />
                             </IconButton>
                         )}
-                        AAAA
+                        TODO PageTitle
                     </Toolbar>
                 </Header>
-                <main className={classes.content}>
-                    <Grid container>{children}</Grid>
-                </main>
+                <main className={classes.content}>{children}</main>
             </MenuContext.Provider>
         );
     }
@@ -65,11 +63,13 @@ const styles = (theme: Theme) =>
         },
         content: {
             marginTop: `60px`,
-            marginLeft: theme.appDrawer.width,
-            paddingLeft: `24px`,
+            paddingLeft: theme.content.defaultPadding,
+            paddingRight: theme.content.defaultPadding,
+            paddingBottom: theme.content.defaultPadding,
             [theme.breakpoints.up("lg")]: {
                 // >=1280px
-                width: `calc(100% - ${theme.appDrawer.width}px)`,
+                marginLeft: `${theme.appDrawer.width}px`,
+                width: `calc(100% - ${theme.appDrawer.width + theme.content.defaultPadding * 2}px)`,
             },
         },
     });

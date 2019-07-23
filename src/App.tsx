@@ -1,11 +1,10 @@
-import { Toolbar } from "@material-ui/core";
 import { RouterBrowserRouter } from "@vivid-planet/react-admin-core";
 import { LocaleContext } from "@vivid-planet/react-admin-date-fns";
 import { MuiThemeProvider } from "@vivid-planet/react-admin-mui";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import { ApolloLink } from "apollo-link";
-import { HttpLink } from "apollo-link-http";
+import { RestLink } from "apollo-link-rest";
 import { withClientState } from "apollo-link-state";
 import Master from "app/components/Master";
 import { getConfig } from "app/config";
@@ -26,13 +25,14 @@ const stateLink = withClientState({
     cache,
     resolvers: {},
 });
+
 const link = ApolloLink.from([
     stateLink,
-    new HttpLink({
-        uri: `${getConfig("apiUrl")}/api/graphql`,
-        // credentials: "include",
+    new RestLink({
+        uri: getConfig("apiUrl"),
         headers: {
-            "x-vivid-auth": `Basic ${btoa(`${getConfig("apiUser")}:${getConfig("apiPassword")}`)}`,
+            "X-Requested-With": "XMLHttpRequest",
+            Authorization: "Bearer xxxx",
         },
     }),
 ]);
