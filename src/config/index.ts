@@ -3,6 +3,8 @@ import test from "app/config/test";
 
 export interface IConfig {
     apiUrl: string;
+    userProviderUrl: string;
+    userProviderClientId: string;
 }
 
 interface IConfigSections {
