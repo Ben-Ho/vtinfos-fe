@@ -4,13 +4,19 @@ import { createMuiTheme } from "@material-ui/core";
 declare module "@material-ui/core/styles/createMuiTheme" {
     interface Theme {
         appDrawer: {
-            width: React.CSSProperties["width"];
+            width: number;
+        };
+        content: {
+            defaultPadding: number;
         };
     }
 
     interface ThemeOptions {
         appDrawer?: {
-            width?: React.CSSProperties["width"];
+            width?: number;
+        };
+        content: {
+            defaultPadding: number;
         };
     }
 }
@@ -73,5 +79,8 @@ export default createMuiTheme({
     },
     appDrawer: {
         width: 320,
+    },
+    content: {
+        defaultPadding: 24,
     },
 });

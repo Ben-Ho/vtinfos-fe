@@ -3,9 +3,5 @@ import Search from "app/components/Search";
 import * as React from "react";
 
 export default () => {
-    return (
-        <Stack topLevelTitle="Suche">
-            <Search />
-        </Stack>
-    );
+    return <Search />;
 };

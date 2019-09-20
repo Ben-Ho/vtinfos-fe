@@ -1,4 +1,3 @@
-import { Drawer, Theme } from "@material-ui/core";
 import AccessibilityNew from "@material-ui/icons/AccessibilityNew";
 import Help from "@material-ui/icons/Help";
 import HelpOutline from "@material-ui/icons/HelpOutline";
@@ -11,6 +10,7 @@ import SpeakerNotes from "@material-ui/icons/SpeakerNotes";
 import TrendingUp from "@material-ui/icons/TrendingUp";
 import Update from "@material-ui/icons/Update";
 import { createStyles, makeStyles } from "@material-ui/styles";
+import { LogoWrapper, StyledDrawer } from "app/components/Drawer.sc";
 import Logo from "app/components/Logo";
 import { MenuItemLink } from "app/components/MenuItemLink";
 import * as React from "react";
@@ -21,37 +21,23 @@ interface IProps {
     variant: "temporary" | "permanent";
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        toolbar: theme.mixins.toolbar,
-        drawerPaper: {
-            width: theme.appDrawer.width,
-        },
-    }),
-);
-
 function ResponsiveDrawer(props: IProps) {
     const { open, closeMenu, variant } = props;
-    const classes = useStyles();
-
     return (
         <nav>
-            <Drawer
+            <StyledDrawer
                 variant={variant}
                 anchor={"left"}
                 open={variant === "temporary" ? open : true}
                 onClose={closeMenu}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
                 ModalProps={{
                     keepMounted: true, // Better open performance on mobile.
                 }}
             >
                 <>
-                    <div style={{ minHeight: "60px" }}>
+                    <LogoWrapper>
                         <Logo />
-                    </div>
+                    </LogoWrapper>
                     {/*g_translate translate language für sprach-wechsel*/}
                     {/*print für pdf-herunterladen*/}
                     {/*get_app für herunterladen*/}
@@ -65,11 +51,12 @@ function ResponsiveDrawer(props: IProps) {
                     <MenuItemLink closeMenu={closeMenu} variant={variant} text="Versammlungen" icon={<LocationCity />} to="/congregations" />
                     {/*// speaker_notes comment chat message textsms*/}
                     <MenuItemLink closeMenu={closeMenu} variant={variant} text="Vorträge" icon={<SpeakerNotes />} to="/talks" />
+                    <MenuItemLink closeMenu={closeMenu} variant={variant} text="Statistiken" icon={<SpeakerNotes />} to="/statistics" />
                     {/*help help_outline oder AccessibilityNew live_help*/}
                     <MenuItemLink closeMenu={closeMenu} variant={variant} text="Anleitungen" icon={<Help />} to="/manual" />
                     {/*    feedback*/}
                 </>
-            </Drawer>
+            </StyledDrawer>
         </nav>
     );
 }
