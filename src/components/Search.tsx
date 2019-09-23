@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import {Button, Grid, Typography} from "@material-ui/core";
 import {
     SortDirection,
     Table as AdminTable,
@@ -64,6 +64,7 @@ const query = gqlRest`
                 congregation_id
                 talks
             }
+            total
         }
     }
 `;
@@ -94,6 +95,7 @@ export interface ISpeaker {
 interface IQueryData {
     speakers: {
         data: ISpeaker[];
+        total: number;
     };
 }
 interface IQueryVariables {
@@ -110,7 +112,7 @@ export default () => {
     const { tableData, api, loading, error } = useTableQuery<IQueryData, IQueryVariables>()(query, {
         resolveTableData: ({ speakers }) => ({
             data: speakers.data,
-            totalCount: speakers.data.length,
+            totalCount: speakers.total,
         }),
         variables: {
             pathFunction: createSpeakersPathFunction,
@@ -121,14 +123,12 @@ export default () => {
     const { pathFunction, sort, order, ...filterValues } = api.getVariables();
     /*
 // TODO umbauen von result-table auf custom kasterl-lösung (ähnlich wie früher) weil table ist mobil ein blödsinn.
-//   -> card-design noch optimieren. überlegen von carContent wirklich verwendet werden soll da der abstand zwischen name + kontakt-daten blöd ist
 //   -> ergänzen von found-talk-highlighting
 //   -> ergänzen von ausgabe aller vorträge die der redner hat.
-//   -> spacing zwischen den cards anpassen
 //   -> kopieren von inhalt überprüfen
-// TODO sortierung über select mit spalten nach denen sortiert werden kann.
-// TODO paging ergänzen
 // TODO überlegen ob react-admin-library dann überhaupt noch sinn macht...
+// TODO mehr-laden button fertig implementieren
+// TODO sortierung über select mit spalten nach denen sortiert werden kann.
 // TODO anpassen von abständen bei filter-form. mobil sollten 5-10px reichen
 // TODO mobil gehen bei filter-form die felder nicht bis zum rand raus. (problem scheint auf html-tag ebene zu liegen)
 // TODO bread-crumb weg, macht keinen sinn....
@@ -170,32 +170,20 @@ export default () => {
                         )}
                     </Field>
                 </TableFilterFinalForm>
-                {tableData && Object.keys(filterValues).length > 0 && tableData.data.map(speaker => <Speaker key={speaker.id} speaker={speaker} />)
-                // <AdminTable
-                //     sortApi={sortApi}
-                //     {...tableData}
-                //     rowName="Redner"
-                //     columns={[
-                //         { name: "givenname", header: "Vorname", sortable: true },
-                //         { name: "familyname", header: "Nachname", sortable: true },
-                //         {
-                //             name: "degree",
-                //             header: "Dienstamt",
-                //             render: row => (row.degree === "e" ? "Ältester" : row.degree === "m" ? "Dienstamtgehilfe" : "Nicht gesetzt"),
-                //         },
-                //         { name: "congregation_name", header: "Versammlung", sortable: true },
-                //         {
-                //             name: "phone",
-                //             header: "Telefon",
-                //             sortable: true,
-                //             render: row => {
-                //                 const phone = row.phone ? row.phone : row.phone2;
-                //                 return phone ? <a href={`tel:${phone}`}>{phone}</a> : "";
-                //             },
-                //         },
-                //         { name: "email", header: "E-Mail", sortable: true },
-                //     ]}
-                // />
+                {/*sortieren nach lastname, distanz*/}
+                <Grid container spacing={2}>
+                    { tableData
+                        && Object.keys(filterValues).length > 0
+                        && tableData.data.map(speaker =>
+                            <Grid item xs={12} sm={6} md={4} lg={3}><Speaker key={speaker.id} speaker={speaker} /></Grid>)
+                    }
+                </Grid>
+                { tableData && tableData.totalCount > tableData.data.length
+                    && <Grid container justify="center" spacing={3}><Grid item>
+                        <Button variant="outlined" onClick={() => {
+                            console.log('button click');
+                        }}>Mehr anzeigen</Button>
+                    </Grid></Grid>
                 }
             </TableQuery>
         </sc.SearchWrapper>

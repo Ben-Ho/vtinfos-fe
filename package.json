@@ -58,7 +58,6 @@
         "@types/webpack": "^4.39.0",
         "@types/webpack-dev-server": "^3.1.7",
         "@types/webpack-env": "^1.14.0",
-        "@vivid-planet/vplint": "^1.0.3",
         "css-loader": "^2.1.1",
         "file-loader": "^3.0.1",
         "fork-ts-checker-webpack-plugin": "^1.5.0",

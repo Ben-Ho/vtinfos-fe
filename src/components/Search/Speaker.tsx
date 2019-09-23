@@ -18,33 +18,36 @@ const Speaker: React.FC<IProps> = ({ speaker }) => {
         <Card>
             <CardHeader
                 title={
-                    <Typography>
-                        {speaker.givenname} {speaker.familyname}
-                        <span>{speaker.degree === "e" ? "Ä" : speaker.degree === "m" ? "D" : "?"}</span>
-                    </Typography>
+                    <>
+                        <Typography>
+                            {speaker.givenname} {speaker.familyname}
+                            &nbsp;<span>{speaker.degree === "e" ? "Ä" : speaker.degree === "m" ? "D" : "?"}</span>
+                        </Typography>
+                    </>
                 }
-                subheader={<Typography>{speaker.congregation_name}</Typography>}
+                subheader={
+                    <>
+                        <Typography>{speaker.congregation_name}</Typography>
+                        {phone && (
+                            <Typography>
+                                Tel: <a href={`tel:${phone}`}>{phone}</a>
+                            </Typography>
+                        )}
+                        {speaker.email && (
+                            <Typography>
+                                <a href={`mailto:${speaker.email}`}>{speaker.email}</a>
+                            </Typography>
+                        )}
+                        {speaker.note && <Typography>{speaker.note}</Typography>}
+                    </>}
                 action={
                     <IconButton onClick={handleExpandClick}>
                         <ExpandMoreIcon />
                     </IconButton>
                 }
             />
-            <CardContent>
-                {phone && (
-                    <Typography>
-                        Tel: <a href={`tel:${phone}`}>{phone}</a>
-                    </Typography>
-                )}
-                {speaker.email && (
-                    <Typography>
-                        <a href={`mailto:${speaker.email}`}>{speaker.email}</a>
-                    </Typography>
-                )}
-                {speaker.note && <Typography>{speaker.note}</Typography>}
-            </CardContent>
             {/*<CardActions></CardActions>*/}
-            <Collapse in={expanded}>hier sollten dann vermutlich alle vorträge aufgelistet werden</Collapse>
+            <Collapse in={expanded}>hier sollten dann vermutlich alle vorträge aufgelistet werden.</Collapse>
         </Card>
     );
 };
