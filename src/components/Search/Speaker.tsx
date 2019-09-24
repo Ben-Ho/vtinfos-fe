@@ -1,8 +1,8 @@
 import { Card, CardActions, CardContent, CardHeader, IconButton, Typography } from "@material-ui/core";
+import Collapse from "@material-ui/core/Collapse";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { ISpeaker } from "app/components/Search";
 import * as React from "react";
-import Collapse from "@material-ui/core/Collapse";
 
 interface IProps {
     speaker: ISpeaker;
@@ -39,7 +39,8 @@ const Speaker: React.FC<IProps> = ({ speaker }) => {
                             </Typography>
                         )}
                         {speaker.note && <Typography>{speaker.note}</Typography>}
-                    </>}
+                    </>
+                }
                 action={
                     <IconButton onClick={handleExpandClick}>
                         <ExpandMoreIcon />

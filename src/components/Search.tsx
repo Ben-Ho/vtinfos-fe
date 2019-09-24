@@ -1,10 +1,15 @@
-import {Button, Grid, Typography} from "@material-ui/core";
+import { Button, Grid, Typography } from "@material-ui/core";
 import {
+    createPagePagingActions,
+    createRestPagingActions,
+    IPagingApi,
+    IPagingInfo,
     SortDirection,
-    Table as AdminTable,
     TableFilterFinalForm,
     TableQuery,
     useTableQuery,
+    useTableQueryFilter,
+    useTableQueryPaging,
     useTableQuerySort,
 } from "@vivid-planet/react-admin-core";
 import { Field, FieldContainer, ReactSelect, ReactSelectAsync, ReactSelectStaticOptions } from "@vivid-planet/react-admin-form";
@@ -12,11 +17,11 @@ import { RestLink } from "apollo-link-rest";
 import * as CommonFormFields from "app/components/common/FormFields";
 import SelectCircleGroupOrCircle from "app/components/Search/SelectCircleGroupOrCircle";
 import SelectCongregation from "app/components/Search/SelectCongregation";
+import Speaker from "app/components/Search/Speaker";
 import { generateQueryString, getSupportedTalkLanguages, ILanguage } from "app/utils";
 import gqlRest from "graphql-tag";
 import * as React from "react";
 import * as sc from "./Search.sc";
-import Speaker from "app/components/Search/Speaker";
 
 const query = gqlRest`
     query SearchSpeakers(
@@ -70,9 +75,9 @@ const query = gqlRest`
 `;
 
 function createSpeakersPathFunction({ args }: RestLink.PathBuilderProps) {
-    const nonFilterParameter = ["sort", "order"];
+    const nonFilterParameter = ["sort", "order", "page"];
     return (
-        `/api/v1/speakers?sort=${args.sort}&sortOrder=${args.order.toUpperCase()}&` +
+        `/api/v1/speakers?sort=${args.sort}&sortOrder=${args.order.toUpperCase()}&page=${args.page}&` +
         generateQueryString<IQueryVariables>(args as IQueryVariables, nonFilterParameter)
     );
 }
@@ -102,25 +107,48 @@ interface IQueryVariables {
     pathFunction: any;
     sort: string;
     order: "DESC" | "ASC";
+    page?: number;
 }
+
+interface IFilterValues {
+    givenname?: string;
+}
+
+const createPagingInfo = (pagingApi: IPagingApi): IPagingInfo => {
+    return {
+        fetchNextPage: () => {
+            debugger;
+            pagingApi.changePage(1, 1);
+        },
+        fetchPreviousPage: () => {},
+        totalPages: 0,
+        currentPage: 0,
+        attachTableRef: (ref: React.RefObject<HTMLDivElement | undefined>) => {},
+    };
+};
 
 export default () => {
     const sortApi = useTableQuerySort({
         columnName: "familyname",
         direction: SortDirection.ASC,
     });
+    const filterApi = useTableQueryFilter<IFilterValues>({});
+    const pagingApi = useTableQueryPaging(1);
     const { tableData, api, loading, error } = useTableQuery<IQueryData, IQueryVariables>()(query, {
         resolveTableData: ({ speakers }) => ({
             data: speakers.data,
             totalCount: speakers.total,
+            pagingInfo: createPagingInfo(pagingApi),
         }),
         variables: {
             pathFunction: createSpeakersPathFunction,
+            page: pagingApi.currentPage,
             sort: sortApi.current.columnName,
             order: sortApi.current.direction === SortDirection.DESC ? "DESC" : "ASC",
+            ...filterApi.current,
         },
     });
-    const { pathFunction, sort, order, ...filterValues } = api.getVariables();
+    console.log(pagingApi);
     /*
 // TODO umbauen von result-table auf custom kasterl-lösung (ähnlich wie früher) weil table ist mobil ein blödsinn.
 //   -> ergänzen von found-talk-highlighting
@@ -139,6 +167,7 @@ export default () => {
         <sc.SearchWrapper>
             <TableQuery api={api} loading={loading} error={error}>
                 <TableFilterFinalForm
+                    filterApi={filterApi}
                     modifySubmitVariables={({ talkLanguage, ...values }) => {
                         return { ...values, talkLanguage: talkLanguage ? talkLanguage.code : undefined };
                     }}
@@ -172,19 +201,32 @@ export default () => {
                 </TableFilterFinalForm>
                 {/*sortieren nach lastname, distanz*/}
                 <Grid container spacing={2}>
-                    { tableData
-                        && Object.keys(filterValues).length > 0
-                        && tableData.data.map(speaker =>
-                            <Grid item xs={12} sm={6} md={4} lg={3}><Speaker key={speaker.id} speaker={speaker} /></Grid>)
-                    }
+                    {tableData &&
+                        Object.keys(filterApi.current).length > 0 &&
+                        tableData.data.map(speaker => (
+                            <Grid key={speaker.id} item xs={12} sm={6} md={4} lg={3}>
+                                <Speaker key={speaker.id} speaker={speaker} />
+                            </Grid>
+                        ))}
                 </Grid>
-                { tableData && tableData.totalCount > tableData.data.length
-                    && <Grid container justify="center" spacing={3}><Grid item>
-                        <Button variant="outlined" onClick={() => {
-                            console.log('button click');
-                        }}>Mehr anzeigen</Button>
-                    </Grid></Grid>
-                }
+                {tableData && tableData.totalCount > tableData.data.length && (
+                    <Grid container justify="center" spacing={3}>
+                        <Grid item>
+                            <Button
+                                variant="outlined"
+                                onClick={() => {
+                                    if (tableData && tableData.pagingInfo && tableData.pagingInfo.fetchNextPage) {
+                                        // console.log("button click", pagingApi.current + 1);
+                                        tableData.pagingInfo.fetchNextPage();
+                                        // pagingApi.changePage(pagingApi.current + 1, pagingApi.current + 1);
+                                    }
+                                }}
+                            >
+                                Mehr anzeigen
+                            </Button>
+                        </Grid>
+                    </Grid>
+                )}
             </TableQuery>
         </sc.SearchWrapper>
     );

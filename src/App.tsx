@@ -14,7 +14,7 @@ import AdditionalPage from "app/pages/AdditionalPage";
 import Search from "app/pages/Search";
 import theme from "app/theme";
 import UserProvider from "app/userProvider/components/UserProvider";
-import * as dateFnsLocaleDe from "date-fns/locale/de";
+import { de as dateFnsLocaleDe } from "date-fns/locale";
 import { User, UserManager, WebStorageStateStore } from "oidc-client";
 import * as React from "react";
 import { ApolloProvider } from "react-apollo";
@@ -84,17 +84,15 @@ class App extends React.Component {
                 <RouterBrowserRouter>
                     <UserProvider oidcUserManager={oidcUserService}>
                         <ApolloProvider client={client}>
-                            <ApolloHooksProvider client={client}>
-                                <LocaleContext.Provider value={dateFnsLocaleDe}>
-                                    <Master>
-                                        <Switch>
-                                            <Route path="/search" component={Search} />
-                                            <Route path="/additional-page" component={AdditionalPage} />
-                                            <Redirect from="/" to="/dashboard" />
-                                        </Switch>
-                                    </Master>
-                                </LocaleContext.Provider>
-                            </ApolloHooksProvider>
+                            <LocaleContext.Provider value={dateFnsLocaleDe}>
+                                <Master>
+                                    <Switch>
+                                        <Route path="/search" component={Search} />
+                                        <Route path="/additional-page" component={AdditionalPage} />
+                                        <Redirect from="/" to="/dashboard" />
+                                    </Switch>
+                                </Master>
+                            </LocaleContext.Provider>
                         </ApolloProvider>
                     </UserProvider>
                 </RouterBrowserRouter>
