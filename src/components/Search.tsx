@@ -1,7 +1,8 @@
+import {useQuery} from "@apollo/react-hooks";
 import { Button, Grid, Typography } from "@material-ui/core";
 import {
     createPagePagingActions,
-    createRestPagingActions,
+    createRestPagingActions, FinalForm,
     IPagingApi,
     IPagingInfo,
     SortDirection,
@@ -103,14 +104,15 @@ interface IQueryData {
         total: number;
     };
 }
-interface IQueryVariables {
+interface IQueryVariables extends IFilterVariables {
     pathFunction: any;
     sort: string;
     order: "DESC" | "ASC";
-    page?: number;
+    start: number;
+    limit: number;
 }
 
-interface IFilterValues {
+interface IFilterVariables {
     givenname?: string;
 }
 
@@ -132,23 +134,37 @@ export default () => {
         columnName: "familyname",
         direction: SortDirection.ASC,
     });
-    const filterApi = useTableQueryFilter<IFilterValues>({});
+    const filterApi = useTableQueryFilter<IFilterVariables>({});
     const pagingApi = useTableQueryPaging(1);
-    const { tableData, api, loading, error } = useTableQuery<IQueryData, IQueryVariables>()(query, {
-        resolveTableData: ({ speakers }) => ({
+    const {loading, data, fetchMore} = useQuery<IQueryData, IQueryVariables>(query, {
+        resolveTableData: ({speakers} => ({
             data: speakers.data,
-            totalCount: speakers.total,
-            pagingInfo: createPagingInfo(pagingApi),
+            totalCount: speakers.total
         }),
         variables: {
             pathFunction: createSpeakersPathFunction,
-            page: pagingApi.currentPage,
             sort: sortApi.current.columnName,
             order: sortApi.current.direction === SortDirection.DESC ? "DESC" : "ASC",
-            ...filterApi.current,
-        },
+            start: pagingApi.current * 25,
+            limit: 25,
+            ...filterApi.current
+        }
     });
-    console.log(pagingApi);
+
+    // const { tableData, api, loading, error } = useTableQuery<IQueryData, IQueryVariables>()(query, {
+    //     resolveTableData: ({ speakers }) => ({
+    //         data: speakers.data,
+    //         totalCount: speakers.total,
+    //         pagingInfo: createPagingInfo(pagingApi),
+    //     }),
+    //     variables: {
+    //         pathFunction: createSpeakersPathFunction,
+    //         page: pagingApi.currentPage,
+    //         sort: sortApi.current.columnName,
+    //         order: sortApi.current.direction === SortDirection.DESC ? "DESC" : "ASC",
+    //         ...filterApi.current,
+    //     },
+    // });
     /*
 // TODO umbauen von result-table auf custom kasterl-lösung (ähnlich wie früher) weil table ist mobil ein blödsinn.
 //   -> ergänzen von found-talk-highlighting
@@ -165,61 +181,63 @@ export default () => {
  */
     return (
         <sc.SearchWrapper>
-            <TableQuery api={api} loading={loading} error={error}>
-                <TableFilterFinalForm
-                    filterApi={filterApi}
-                    modifySubmitVariables={({ talkLanguage, ...values }) => {
-                        return { ...values, talkLanguage: talkLanguage ? talkLanguage.code : undefined };
-                    }}
-                >
-                    <Field name="talk" type="text" label="Vortrag (Nr. oder Titel)" component={CommonFormFields.StyledInput} />
-                    <Field
-                        name="talkLanguage"
-                        type="text"
-                        label="Vortragssprache"
-                        component={ReactSelect}
-                        getOptionLabel={(option: ILanguage) => option.name}
-                        getOptionValue={(option: ILanguage) => option.code}
-                        isClearable
-                        options={getSupportedTalkLanguages("de")}
-                    />
-                    <Field name="givenname" type="text" label="Vorname" component={CommonFormFields.StyledInput} />
-                    <Field name="familyname" type="text" label="Nachname" component={CommonFormFields.StyledInput} />
-                    <Field name="email" type="text" label="E-Mail" component={CommonFormFields.StyledInput} />
-                    <Field name="phone" type="text" label="Telefonnummer" component={CommonFormFields.StyledInput} />
-                    <Field name="congregation" label="Versammlung" component={SelectCongregation} />
-                    <Field name="circle" label="Kreis" component={SelectCircleGroupOrCircle} />
-                    <Field name="maxDistance" defaultValue={50} type="text" label="Luftlinie (km)" component={CommonFormFields.StyledInput} />
-                    <Field name="noBeard" type="checkbox" label="Kein Voll-/Modebart">
-                        {({ input, meta }) => (
-                            <FieldContainer label="Kein Voll-/Modebart">
-                                <input type="checkbox" {...input} />
-                                {meta.error && meta.touched && <Typography color="error">{meta.error}</Typography>}
-                            </FieldContainer>
-                        )}
-                    </Field>
-                </TableFilterFinalForm>
+            {/*<TableQuery api={api} loading={loading} error={error}>*/}
+            {/*    <FinalForm*/}
+            {/*        // filterApi={filterApi}*/}
+            {/*        // modifySubmitVariables={({ talkLanguage, ...values }) => {*/}
+            {/*        //     return { ...values, talkLanguage: talkLanguage ? talkLanguage.code : undefined };*/}
+            {/*        /*}}*/}
+            {/*    >*/}
+            {/*        <Field name="talk" type="text" label="Vortrag (Nr. oder Titel)" component={CommonFormFields.StyledInput} />*/}
+            {/*        <Field*/}
+            {/*            name="talkLanguage"*/}
+            {/*            type="text"*/}
+            {/*            label="Vortragssprache"*/}
+            {/*            component={ReactSelect}*/}
+            {/*            getOptionLabel={(option: ILanguage) => option.name}*/}
+            {/*            getOptionValue={(option: ILanguage) => option.code}*/}
+            {/*            isClearable*/}
+            {/*            options={getSupportedTalkLanguages("de")}*/}
+            {/*        />*/}
+            {/*        <Field name="givenname" type="text" label="Vorname" component={CommonFormFields.StyledInput} />*/}
+            {/*        <Field name="familyname" type="text" label="Nachname" component={CommonFormFields.StyledInput} />*/}
+            {/*        <Field name="email" type="text" label="E-Mail" component={CommonFormFields.StyledInput} />*/}
+            {/*        <Field name="phone" type="text" label="Telefonnummer" component={CommonFormFields.StyledInput} />*/}
+            {/*        <Field name="congregation" label="Versammlung" component={SelectCongregation} />*/}
+            {/*        <Field name="circle" label="Kreis" component={SelectCircleGroupOrCircle} />*/}
+            {/*        <Field name="maxDistance" defaultValue={50} type="text" label="Luftlinie (km)" component={CommonFormFields.StyledInput} />*/}
+            {/*        <Field name="noBeard" type="checkbox" label="Kein Voll-/Modebart">*/}
+            {/*            {({ input, meta }) => (*/}
+            {/*                <FieldContainer label="Kein Voll-/Modebart">*/}
+            {/*                    <input type="checkbox" {...input} />*/}
+            {/*                    {meta.error && meta.touched && <Typography color="error">{meta.error}</Typography>}*/}
+            {/*                </FieldContainer>*/}
+            {/*            )}*/}
+            {/*        </Field>*/}
+            {/*    </FinalForm>*/}
                 {/*sortieren nach lastname, distanz*/}
                 <Grid container spacing={2}>
-                    {tableData &&
-                        Object.keys(filterApi.current).length > 0 &&
-                        tableData.data.map(speaker => (
+                    {data && data.speakers &&
+                        // Object.keys(filterApi.current).length > 0 &&
+                        data.speakers.data.map(speaker => (
                             <Grid key={speaker.id} item xs={12} sm={6} md={4} lg={3}>
                                 <Speaker key={speaker.id} speaker={speaker} />
                             </Grid>
                         ))}
                 </Grid>
-                {tableData && tableData.totalCount > tableData.data.length && (
+                {data && data.speakers.total > data.speakers.data.length && (
                     <Grid container justify="center" spacing={3}>
                         <Grid item>
                             <Button
                                 variant="outlined"
                                 onClick={() => {
-                                    if (tableData && tableData.pagingInfo && tableData.pagingInfo.fetchNextPage) {
+                                    fetchMore(query, );
+                                    console.log('her');
+                                    // if (data && data.pagingInfo && data.pagingInfo.fetchNextPage) {
                                         // console.log("button click", pagingApi.current + 1);
-                                        tableData.pagingInfo.fetchNextPage();
+                                        // data.pagingInfo.fetchNextPage();
                                         // pagingApi.changePage(pagingApi.current + 1, pagingApi.current + 1);
-                                    }
+                                    // }
                                 }}
                             >
                                 Mehr anzeigen
@@ -227,7 +245,7 @@ export default () => {
                         </Grid>
                     </Grid>
                 )}
-            </TableQuery>
+            {/*</TableQuery>*/}
         </sc.SearchWrapper>
     );
 };

@@ -3,8 +3,8 @@ import ApolloClient from "apollo-client";
 import { RestLink } from "apollo-link-rest";
 import gqlRest from "graphql-tag";
 import * as React from "react";
-import { ApolloConsumer } from "react-apollo";
 import { FieldRenderProps } from "react-final-form";
+import { ApolloConsumer } from "@apollo/react-hooks";
 
 interface IOption {
     value: string;

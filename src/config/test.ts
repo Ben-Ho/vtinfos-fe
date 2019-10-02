@@ -3,9 +3,9 @@ import production from "app/config/production";
 
 const config: IConfig = {
     ...production,
-    apiUrl: "http://test-v2.vtinfos.com",
-    userProviderUrl: "http://test-v2.vtinfos.com",
-    userProviderClientId: "vtinfos_test",
+    apiUrl: "http://test6.renner-stauden.at",
+    userProviderUrl: "http://test6.renner-stauden.at",
+    userProviderClientId: "vtinfos_local",
 };
 
 export default config;
