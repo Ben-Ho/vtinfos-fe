@@ -1,7 +1,9 @@
+import { ApolloProvider } from "@apollo/react-hooks";
 import { RouterBrowserRouter } from "@vivid-planet/react-admin-core";
 import { LocaleContext } from "@vivid-planet/react-admin-date-fns";
 import { MuiThemeProvider } from "@vivid-planet/react-admin-mui";
 import { InMemoryCache } from "apollo-cache-inmemory";
+import ApolloClient from "apollo-client";
 import { ApolloLink } from "apollo-link";
 import { setContext } from "apollo-link-context";
 import { RestLink } from "apollo-link-rest";
@@ -19,8 +21,6 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Redirect, Route, Switch } from "react-router-dom";
 import * as Webfontloader from "webfontloader";
-import ApolloClient from "apollo-client";
-import { ApolloProvider } from "@apollo/react-hooks";
 
 const cache = new InMemoryCache();
 const stateLink = withClientState({

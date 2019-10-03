@@ -1,10 +1,10 @@
+import { ApolloConsumer } from "@apollo/react-hooks";
 import { ReactSelectAsync } from "@vivid-planet/react-admin-form";
 import ApolloClient from "apollo-client";
 import { RestLink } from "apollo-link-rest";
 import gqlRest from "graphql-tag";
 import * as React from "react";
 import { FieldRenderProps } from "react-final-form";
-import { ApolloConsumer } from "@apollo/react-hooks";
 
 interface ICongregationOption {
     id: number;
@@ -53,7 +53,7 @@ interface IProps extends FieldRenderProps<string, HTMLElement> {}
 const SelectCongregation: React.FC<IProps> = props => {
     return (
         <ApolloConsumer>
-            {client => (
+            {(client: ApolloClient<object>) => (
                 <ReactSelectAsync
                     loadingMessage={({ inputValue }) => `Suche Versammlungen mit ${inputValue} im Namen...`}
                     noOptionsMessage={() => `Bitte Text eingeben oder ändern.`}

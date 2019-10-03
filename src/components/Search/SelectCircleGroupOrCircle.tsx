@@ -1,10 +1,10 @@
+import { ApolloConsumer } from "@apollo/react-hooks";
 import { ReactSelectAsync } from "@vivid-planet/react-admin-form";
 import ApolloClient from "apollo-client";
 import { RestLink } from "apollo-link-rest";
 import gqlRest from "graphql-tag";
 import * as React from "react";
 import { FieldRenderProps } from "react-final-form";
-import { ApolloConsumer } from "@apollo/react-hooks";
 
 interface IOption {
     value: string;

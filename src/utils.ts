@@ -1,17 +1,16 @@
 import * as queryString from "querystring";
 
-export function generateQueryString<T extends object>(queryVariables: T, excludeProperties: string[]): string {
+export function generateQueryString(queryVariables: { [key: string]: any }): string {
     return queryString.stringify(
         Object.keys(queryVariables)
             .filter((key: string) => {
-                if (excludeProperties.find((value: string) => value === key) !== undefined) return false; // should be excluded
-                if (queryVariables[key as keyof T] === undefined) return false; // no value
-                const valueType = typeof queryVariables[key as keyof T];
+                if (queryVariables[key] === undefined) return false; // no value
+                const valueType = typeof queryVariables[key];
                 return valueType === "string" || valueType === "boolean" || valueType === "number"; // only supported types
             })
             // no map needed as types transform well into string
             .reduce((acc: { [key: string]: any }, key: string): { [key: string]: any } => {
-                acc[key] = queryVariables[key as keyof T];
+                acc[key] = queryVariables[key];
                 return acc;
             }, {}),
     );
